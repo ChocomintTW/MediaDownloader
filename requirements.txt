@@ -1,0 +1,6 @@
+inquirerpy
+pytube
+alive-progress
+soundcloud-lib
+mutagen
+colorama
