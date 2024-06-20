@@ -20,7 +20,7 @@ def single_video_downloader(video: YouTube):
 	if type == "mp3":
 		title = inquirer.text("title:", default=video.title, validate=required, invalid_message="Title is required", amark="✓").execute()
 		artist = inquirer.text("artist:", default=video.author, amark="✓").execute()
-		filename = inquire_filename(sanitize_filename(title)).execute()
+		filename = inquire_filename(sanitize_filename(f"{title} - {artist}")).execute()
 
 		with spinner("Downloading...") as bar:
 			video.streams.filter().get_audio_only().download(filename="temp.mp3")

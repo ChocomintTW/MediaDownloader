@@ -9,12 +9,16 @@ def downloader(x: Track | Playlist):
 		track = x
 		print(f"SoundCloud Track: \033[1m{track.title}")
 
-		filename = inquire_filename(sanitize_filename(track.title)).execute()
+		title = inquirer.text("title:", default=track.title, validate=required, invalid_message="Title is required", amark="✓").execute()
+		artist = inquirer.text("artist:", default=track.artist, amark="✓").execute()
+		filename = inquire_filename(sanitize_filename(f"{title} - {artist}")).execute()
 
 		with spinner("Downloading...") as bar:
 
 			with open(f"{filename}.mp3", "wb+") as file:
 				track.write_mp3_to(file)
+			
+			modify_id3(f"{filename}.mp3", title, artist)
 			
 			bar.title = "Finished!"
 	
