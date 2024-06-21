@@ -26,18 +26,25 @@ def downloader(x: Track | Playlist):
 		playlist = x
 		print(f"SoundCloud Playlist: \033[1m{playlist.title} ({playlist.track_count} tracks)")
 
+		selected_tracks, selected_count = inquire_playlist_range(playlist.tracks)
+
 		dir = inquirer.text("target directory:", default=playlist.title, validate=required, invalid_message="Directory is required", amark="✓").execute()
 		if not os.path.exists(dir):
 			os.mkdir(dir)
+		
+		format = inquire_filename_format()
 
-		with alive_bar(playlist.track_count, title="Downloading...", length=40, bar="smooth") as bar:
+		with playlist_downloading_bar(selected_count) as bar:
 
-			for track in playlist.tracks:
-				
-				filename = sanitize_filename(track.title)
+			number = 1
+			for track in selected_tracks:
+
+				filename = sanitize_filename(playlist_filename_replace(format, number, track.title, track.artist))
+
 				with open(f"{dir}/{filename}.mp3", "wb+") as file:
 					track.write_mp3_to(file)
 				
 				bar()
+				number += 1
 			
 			bar.title = "Finished!"

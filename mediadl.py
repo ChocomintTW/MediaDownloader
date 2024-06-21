@@ -1,4 +1,4 @@
-import re, ssl
+import re, ssl, subprocess
 from InquirerPy import inquirer
 from pytube import YouTube, Playlist
 from utils import *
@@ -25,7 +25,18 @@ def link_validator(link: str):
 def main():
 	ssl._create_default_https_context = ssl._create_stdlib_context
 
-	print("Media Downloader v1.0 - By Chocomint\n")
+	print("Media Downloader v1.1 - By Chocomint\n")
+
+	# check ffmpeg
+	having_ffmpeg = True
+	try:
+		subprocess.run("ffmpeg", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+	except:
+		having_ffmpeg = False
+		warning("You don't have ffmpeg. You cannot fix header for YouTube media.")
+		if not inquirer.confirm("Do you want to continue?").execute():
+			return
+		print()
 
 	link = inquirer.text(
 		"media link:",
@@ -41,7 +52,7 @@ def main():
 			error("Invalid YouTube video")
 			return
 		
-		youtube.single_video_downloader(video)
+		youtube.single_video_downloader(video, having_ffmpeg)
 
 	elif is_yt_playlist(link):
 		try:
@@ -50,7 +61,7 @@ def main():
 			error("Invalid YouTube playlist")
 			return
 		
-		youtube.playlist_downloader(playlist)
+		youtube.playlist_downloader(playlist, having_ffmpeg)
 
 	elif is_soundcloud(link):
 		block_print_error()
