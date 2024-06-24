@@ -1,4 +1,3 @@
-__pycache__/soundcloud.cpython-312.pyc
-__pycache__/utils.cpython-312.pyc
-__pycache__/youtube.cpython-312.pyc
+__pycache__/
+output/
 test.py
